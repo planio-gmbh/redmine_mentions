@@ -1,9 +1,8 @@
-require 'redmine'
+require_dependency 'redmine_mentions/hooks'
 
 Rails.configuration.to_prepare do
-  require_dependency 'redmine_mentions/hooks'
-  require_dependency 'journal'
-  Journal.send(:include, RedmineMentions::JournalPatch)
+  Journal.send(:include, RedmineMentions::JournalPatch) unless Journal < RedmineMentions::JournalPatch
+  RedmineMentions::MailerPatch.apply
 end
 Redmine::Plugin.register :redmine_mentions do
   name 'Redmine Mentions'
