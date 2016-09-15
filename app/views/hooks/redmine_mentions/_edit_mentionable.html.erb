@@ -13,7 +13,7 @@
 <script>
   $('#issue_notes,#issue_description').textcomplete([
     {
-      mentions: <%=  users.collect{|u| "#{u.firstname} #{u.lastname} - <small>#{u.login}</small>"}.to_json.html_safe %>,
+      mentions: <%=  users.collect{|u| "#{h u.firstname} #{h u.lastname} - <small>#{h u.login}</small>"}.to_json.html_safe %>,
       match: <%=regex_find%>,
       search: function(term, callback) {
         callback($.map(this.mentions, function(mention) {
