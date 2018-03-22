@@ -1,7 +1,7 @@
 <%= javascript_include_tag 'jquery.textcomplete.js', :plugin => 'redmine_mentions' %>
 <%= javascript_include_tag 'jquery.overlay.js', :plugin => 'redmine_mentions' %>
 <%= stylesheet_link_tag 'auto_complete.css', :plugin => 'redmine_mentions' %>
-<% regex_find = '/\B'+Setting.plugin_redmine_mentions['trigger']+'(\w*)$/i'%>
+<% regex_find = '/\B'+j(Setting.plugin_redmine_mentions['trigger'])+'(\w*)$/i'%>
 
 <% if @project %>
   <% users = @project.users.visible.to_a.delete_if{|u| (u.type != 'User' || u.mail.empty?)}%>
@@ -9,12 +9,12 @@
   <% users = User.active.visible.to_a.delete_if{|u| (u.type != 'User' || u.mail.empty?)}%>
 <% end %>
 <% users_regex = users.collect{|u| "#{Setting.plugin_redmine_mentions['trigger']}#{u.login}"}.join('|')%>
-<% regex_highlight = '/\B('+users_regex+')\b/g' %>
-<script>
-  $('#issue_notes,#issue_description').textcomplete([
+<% regex_highlight = '/\B('+ j(users_regex) +')\b/g' %>
+<%= javascript_tag do %>
+  $('#issue_notes').textcomplete([
     {
-      mentions: <%=  users.collect{|u| "#{h u.firstname} #{h u.lastname} - <small>#{h u.login}</small>"}.to_json.html_safe %>,
-      match: <%=regex_find%>,
+      mentions: <%=  users.collect{|u| "#{j h u.firstname} #{j h u.lastname} - <small>#{h u.login}</small>"}.to_json.html_safe %>,
+      match: <%= regex_find %>,
       search: function(term, callback) {
         callback($.map(this.mentions, function(mention) {
           return mention.toLowerCase().indexOf(term.toLowerCase()) !== -1 ? mention : null;
@@ -24,7 +24,7 @@
       replace: function(mention) {
         var parts = mention.split(' - ');
         var name = parts[1].substring(parts[1].lastIndexOf("<small>")+7,parts[1].lastIndexOf("</small>"));
-        return '<%=Setting.plugin_redmine_mentions['trigger']%>' + name + ' ';
+        return '<%= j Setting.plugin_redmine_mentions['trigger']%>' + name + ' ';
       }
     }
   ]).overlay([
@@ -35,4 +35,4 @@
       }
     }
   ]);
-</script>
+<% end %>
