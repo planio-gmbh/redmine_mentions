@@ -8,9 +8,9 @@ class MentionMailer < ActionMailer::Base
   def self.default_url_options
     Mailer.default_url_options
   end
-  
-  
-  def notify_mentioning(issue, journal, user)
+
+
+  def notify_mentioning(user, issue, journal)
     @issue = issue
     @journal = journal
     mail(to: user.mail, subject: "[#{@issue.tracker.name} ##{@issue.id}] You were mentioned in: #{@issue.subject}")
