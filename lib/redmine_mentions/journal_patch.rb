@@ -3,7 +3,7 @@ module RedmineMentions
     def self.included(base)
       base.class_eval do
         after_create :send_mail
-        
+
         def send_mail
           if self.journalized.is_a?(Issue) && self.notes.present?
             issue = self.journalized
@@ -17,6 +17,7 @@ module RedmineMentions
               username = mentioned_user.first[1..-1]
               if user = User.find_by_login(username)
                 MentionMailer.notify_mentioning(issue, self, user).deliver
+                issue.add_watcher user unless user.in? [issue.author, issue.assigned_to]
               end
             end
           end
