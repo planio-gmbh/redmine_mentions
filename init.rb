@@ -12,5 +12,4 @@ Redmine::Plugin.register :redmine_mentions do
   version '0.0.1'
   url 'https://github.com/arkhitech/redmine_mentions'
   author_url 'http://www.arkhitech.com/'
-  settings :default => {'trigger' => '@'}, :partial => 'settings/mention'
 end
